@@ -1,17 +1,30 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "files.h"
 
-int main ()
+
+
+int main()
 {
-    printf("Taille de la file : %d\n", longueur_File());
-    afficher_File();
+    File *maFile = initialiser();
 
-    push_dans_file(14);
-    printf("Taille de la file : %d\n", longueur_File());
-    afficher_File();
+    enfiler(maFile, 4);
+    enfiler(maFile, 8);
+    enfiler(maFile, 15);
+    enfiler(maFile, 16);
+    enfiler(maFile, 23);
+    enfiler(maFile, 42);
 
-    pop_dans_file();
-    printf("Taille de la file : %d\n", longueur_File());
-    afficher_File();
+    printf("\nEtat de la file :\n");
+    afficherFile(maFile);
+
+    printf("\nJe defile %d\n", defiler(maFile));
+    printf("Je defile %d\n", defiler(maFile));
+
+    printf("\nEtat de la file :\n");
+    afficherFile(maFile);
 
     return 0;
 }
+
+

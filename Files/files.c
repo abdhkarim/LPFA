@@ -1,113 +1,83 @@
-#include "files.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "files.h"
 
-bool file_est_vide(void)
+File *initialiser()
 {
-    if(first == NULL && last == NULL)
-        return true;
+    File *file = malloc(sizeof(*file));
+    file->premier = NULL;
 
-    return false;
-
+    return file;
 }
 
-int longueur_File()
-{
-    return nb_elements;
-}
 
-int premier_elt_file()
+void enfiler(File *file, int nvNombre)
 {
-    if(file_est_vide())
-        exit(1);
-
-    return first->data;
-}
-int dernier_elt_file()
-{
-    if(file_est_vide())
-        exit(1);
-
-    return last->data;
-}
-
-void afficher_File()
-{
-    if(file_est_vide())
+    Element *nouveau = malloc(sizeof(*nouveau));
+    if (file == NULL || nouveau == NULL)
     {
-        printf("la liste est vide, rien a afficher.");
-        return;
+        exit(EXIT_FAILURE);
     }
 
-    pFile tmp = first;
+    nouveau->nombre = nvNombre;
+    nouveau->suivant = NULL;
 
-    while(tmp != NULL)
+    if (file->premier != NULL) /* La file n'est pas vide */
     {
-        printf("[%d]", tmp->data);
-        tmp = tmp->next;
+        /* On se positionne à la fin de la file */
+        Element *elementActuel = file->premier;
+        while (elementActuel->suivant != NULL)
+        {
+            elementActuel = elementActuel->suivant;
+        }
+        elementActuel->suivant = nouveau;
     }
+    else /* La file est vide, notre élément est le premier */
+    {
+        file->premier = nouveau;
+    }
+}
+
+
+int defiler(File *file)
+{
+    if (file == NULL)
+    {
+        exit(EXIT_FAILURE);
+    }
+
+    int nombreDefile = 0;
+
+    /* On vérifie s'il y a quelque chose à défiler */
+    if (file->premier != NULL)
+    {
+        Element *elementDefile = file->premier;
+
+        nombreDefile = elementDefile->nombre;
+        file->premier = elementDefile->suivant;
+        free(elementDefile);
+    }
+
+    return nombreDefile;
+}
+
+void afficherFile(File *file)
+{
+    if (file == NULL)
+    {
+        exit(EXIT_FAILURE);
+    }
+
+    Element *element = file->premier;
+
+    while (element != NULL)
+    {
+        printf("%d ", element->nombre);
+        element = element->suivant;
+    }
+
     printf("\n");
 }
 
-void push_dans_file(int x)
-{
-    pFile Elt;
-
-    Elt = malloc(sizeof(*Elt));
-
-    if(Elt == NULL)
-    {
-        fprintf(stderr, "Erreur : problème d'allocation dynamique\n");
-        exit(EXIT_FAILURE);
-    }
-    Elt->data = x;
-    Elt->next = NULL;
-
-    if(file_est_vide())
-    {
-        first = Elt;
-        last = Elt;
-    }
-    else 
-    {
-        last->next = Elt;
-        last = Elt;
-    }
-    nb_elements++;
-
-}
 
 
-void pop_dans_file()
-{
-    if(file_est_vide())
-    {
-        printf("Rien a retirer, la file st vide");
-        return;
-    }
-    pFile tmp = first;
-    if(first == last)
-    {
-        first = NULL;
-        last = NULL;
-    }
-    else {
-        first = first->next;
-    }
-
-    free(tmp);
-    nb_elements--;
-}
-
-void effacer_file()
-{
-    if(file_est_vide())
-    {
-        printf("la file est vide");
-        return ;
-    }
-    while(!file_est_vide())
-    {
-        pop_dans_file();
-    }
-}
